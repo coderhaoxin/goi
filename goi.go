@@ -21,7 +21,7 @@ func main() {
 
 func mkTmpDir(name string) string {
 	tmp := os.TempDir()
-	s, _ := convert.String(time.Now().UnixNano())
+	s := convert.String(time.Now().UnixNano())
 	tmpdir := path.Join(tmp, "goi-"+name+"-"+s)
 	err := os.Mkdir(tmpdir, 0700)
 	if err != nil {
@@ -29,10 +29,6 @@ func mkTmpDir(name string) string {
 		panic(err)
 	}
 	return tmpdir
-}
-
-func rmTmpDir() {
-
 }
 
 func setEnv(gopath string) {
