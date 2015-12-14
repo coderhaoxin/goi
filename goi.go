@@ -1,18 +1,21 @@
 package main
 
-import "github.com/pkg4go/pkgs/command"
 import "github.com/pkg4go/pkgs/convert"
+import "github.com/pkg4go/execx"
+import "strings"
 import "time"
 import "path"
 import "fmt"
 import "os"
 
 func main() {
-	pkg := os.Args[1]
+	pkg := resolvePath(os.Args[1])
 	name := path.Base(pkg)
 	gopath := mkTmpDir(name)
+
 	setEnv(gopath)
 	get(pkg)
+
 	err := os.RemoveAll(gopath)
 	if err != nil {
 		panic(err)
@@ -43,10 +46,17 @@ func setEnv(gopath string) {
 }
 
 func get(pkg string) {
-	out, err := command.Run("go", "get", pkg)
+	out, err := execx.Run("go", "get", pkg)
 	if err != nil {
 		panic(err)
 	}
 
 	fmt.Println(out)
+}
+
+func resolvePath(pkgParh string) string {
+	if strings.Count(pkgParh, "/") == 1 {
+		return path.Join("github.com", pkgParh)
+	}
+	return pkgParh
 }
