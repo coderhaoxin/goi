@@ -1,21 +1,25 @@
-### goi
 
-`goi == go install`
+### goi :dancers:
 
-Only want to get the bin ? Such as some command line tools.
+`goi == go get (binary only, no repo)`
 
-Oh, this is for you.
+Only want to get the binary ? Such as some command line tools.
+
+Oh, this is for you. :dancer:
 
 ### Usage
 
-```sh
-$ go get github.com/pkg4go/goi
+```bash
+$ go get github.com/coderhaoxin/goi
 
-# get something
+# install something
 $ goi github.com/rakyll/boom
 
 # or
 $ goi rakyll/boom
+
+# with flags
+$ goi -u rakyll/boom
 ```
 
 ### License

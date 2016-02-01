@@ -1,6 +1,6 @@
 package main
 
-import "github.com/pkg4go/pkgs/convert"
+import "github.com/pkg4go/convert"
 import "github.com/pkg4go/execx"
 import "strings"
 import "time"
@@ -9,12 +9,12 @@ import "fmt"
 import "os"
 
 func main() {
-	pkg := resolvePath(os.Args[1])
-	name := path.Base(pkg)
-	gopath := mkTmpDir(name)
+	pkg, args := getArgs(os.Args)
+
+	gopath := mkTmpDir(path.Base(pkg))
 
 	setEnv(gopath)
-	get(pkg)
+	goget(args)
 
 	err := os.RemoveAll(gopath)
 	if err != nil {
@@ -45,8 +45,27 @@ func setEnv(gopath string) {
 	fmt.Printf("GOBIN : %s \nGOPATH: %s \n", gobin, gopath)
 }
 
-func get(pkg string) {
-	out, err := execx.Run("go", "get", pkg)
+func getArgs(cmdArgs []string) (pkg string, args []string) {
+	flags := make([]string, len(cmdArgs)-2)
+	args = make([]string, len(cmdArgs))
+
+	for _, v := range cmdArgs[1:] {
+		if strings.HasPrefix(v, "-") {
+			flags = append(flags, v)
+		} else {
+			pkg = resolvePath(v)
+		}
+	}
+
+	args = append(args, "get")
+	args = append(args, flags[:]...)
+	args = append(args, pkg)
+
+	return
+}
+
+func goget(args []string) {
+	out, err := execx.Run("go", args[:]...)
 	if err != nil {
 		panic(err)
 	}
