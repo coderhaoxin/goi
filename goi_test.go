@@ -1,38 +1,39 @@
 package main
 
+import . "github.com/pkg4go/assert"
 import "testing"
 import "strings"
 import "os"
 
 func TestDirAndEnv(t *testing.T) {
+	a := A{t}
+
 	gopath := mkTmpDir("test")
 	setEnv(gopath)
 	// TODO: check tmp dir exists
-	if os.Getenv("GOPATH") != gopath {
-		t.Errorf("GOPATH: %s, gopath: %s", os.Getenv("GOPATH"), gopath)
-	}
+	a.Equal(os.Getenv("GOPATH"), gopath)
 }
 
 func TestResolvePath(t *testing.T) {
-	if resolvePath("coderhaoxin/goi") != "github.com/coderhaoxin/goi" {
-		t.Errorf("resolved path: %s", resolvePath("coderhaoxin/goi"))
-	}
+	a := A{t}
+	a.Equal(resolvePath("coderhaoxin/goi"), "github.com/coderhaoxin/goi")
 }
 
 func TestGetArgs(t *testing.T) {
-	pkg, args := getArgs([]string{"goi", "-u", "coderhaoxin/hp"})
-	if pkg != "github.com/coderhaoxin/hp" {
-		t.Errorf("pkg:", pkg)
-	}
-	if strings.Join(args, "") != "get-ugithub.com/coderhaoxin/hp" {
-		t.Errorf("args:", strings.Join(args, ""))
-	}
+	a := A{t}
+
+	pkg, args := getArgs([]string{"goi", "coderhaoxin/hp"})
+	a.Equal(len(args), 2)
+	a.Equal(pkg, "github.com/coderhaoxin/hp")
+	a.Equal(strings.Join(args, ""), "getgithub.com/coderhaoxin/hp")
+
+	pkg, args = getArgs([]string{"goi", "-u", "coderhaoxin/hp"})
+	a.Equal(len(args), 3)
+	a.Equal(pkg, "github.com/coderhaoxin/hp")
+	a.Equal(strings.Join(args, ""), "get-ugithub.com/coderhaoxin/hp")
 
 	pkg, args = getArgs([]string{"goi", "coderhaoxin/hp", "-u"})
-	if pkg != "github.com/coderhaoxin/hp" {
-		t.Errorf("pkg:", pkg)
-	}
-	if strings.Join(args, "") != "get-ugithub.com/coderhaoxin/hp" {
-		t.Errorf("args:", strings.Join(args, ""))
-	}
+	a.Equal(len(args), 3)
+	a.Equal(pkg, "github.com/coderhaoxin/hp")
+	a.Equal(strings.Join(args, ""), "get-ugithub.com/coderhaoxin/hp")
 }

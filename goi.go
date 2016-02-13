@@ -46,8 +46,8 @@ func setEnv(gopath string) {
 }
 
 func getArgs(cmdArgs []string) (pkg string, args []string) {
-	flags := make([]string, len(cmdArgs)-2)
-	args = make([]string, len(cmdArgs))
+	flags := make([]string, 0)
+	args = []string{"get"}
 
 	for _, v := range cmdArgs[1:] {
 		if strings.HasPrefix(v, "-") {
@@ -57,8 +57,9 @@ func getArgs(cmdArgs []string) (pkg string, args []string) {
 		}
 	}
 
-	args = append(args, "get")
-	args = append(args, flags[:]...)
+	if len(flags) != 0 {
+		args = append(args, flags[:]...)
+	}
 	args = append(args, pkg)
 
 	return
