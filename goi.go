@@ -1,6 +1,7 @@
 package main
 
 import "github.com/pkg4go/convert"
+import "github.com/pkg4go/slicex"
 import "github.com/pkg4go/execx"
 import "strings"
 import "time"
@@ -8,7 +9,20 @@ import "path"
 import "fmt"
 import "os"
 
+const usage = `
+  Usage:
+    goi github.com/rakyll/boom
+    goi rakyll/boom
+    goi -u rakyll/boom
+`
+
 func main() {
+	help := slicex.Contains(os.Args, "-h") || slicex.Contains(os.Args, "--help")
+	if len(os.Args) < 2 || help {
+		fmt.Println(usage)
+		os.Exit(1)
+	}
+
 	pkg, args := getArgs(os.Args)
 
 	gopath := mkTmpDir(path.Base(pkg))
